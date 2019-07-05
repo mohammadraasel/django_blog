@@ -38,7 +38,7 @@
                         <!-- Navbar Right Side -->
                         <div class="navbar-nav">
                             <a class="nav-item nav-link" href="#">Login</a>
-                            <a class="nav-item nav-link" href="#">Register</a>
+                            <a class="nav-item nav-link" href="{% url 'user_register' %}">Register</a>
                         </div>
                     </div>
                 </div>
@@ -47,7 +47,9 @@
         <main role="main" class="container">
                 <div class="row">
                     <div class="col-md-8">
-                        {% block content %}{% endblock %}
+                        {% block content %}
+
+                        {% endblock content %}
                     </div>
                     <div class="col-md-4">
                         <div class="content-section">
