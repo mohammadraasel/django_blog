@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from .models import Post
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 
 
 # Create your views here.
@@ -9,8 +10,12 @@ from .models import Post
 
 
 def home(request):
+    posts = Post.objects.order_by('created_at')
+    paginator = Paginator(posts , 3)
+    page = request.GET.get('page')
+    paged_posts = paginator.get_page(page)
     context = {
-        "posts": Post.objects.all()
+        "posts": paged_posts
     }
     return render(request, 'blog/home.html', context)
 
