@@ -1,29 +1,37 @@
 from django.shortcuts import render
 from .models import Post
+from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import (
+    ListView,
+    DetailView,
+    CreateView,
+    UpdateView
+)
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 
 
-# Create your views here.
+class PostListView(ListView):
+    model = Post
+    template_name = 'blog/home.html'
+    context_object_name = 'posts'
+    ordering = ['-created_at']
 
 
-def home(request):
-    posts = Post.objects.order_by('created_at')
-    paginator = Paginator(posts, 3)
-    page = request.GET.get('page')
-    paged_posts = paginator.get_page(page)
-    context = {
-        "posts": paged_posts
-    }
-    return render(request, 'blog/home.html', context)
+class PostDetailView(DetailView):
+    model = Post
+    context_object_name = "post"
 
 
-def PostDetail(request, post_id):
-    posts = Post.objects.filter(pk=post_id)
-    posts ={
-        'posts' : posts
-    }
-    return render(request, 'blog/post/post.html', posts)
+class PostCreateView(LoginRequiredMixin, CreateView):
+    model = Post
+    fields = ['title', 'content']
+    success_url = reverse_lazy('blog_home')
 
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+    
 
 def about(request):
     return render(request, 'blog/about.html', {'title': "About"})
